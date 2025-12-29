@@ -10,6 +10,10 @@
 #include <Framework/Text/RichTextMarkupProcessing.h>
 #include <Framework/Text/ShapedTextCache.h>
 
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 7
+#include <Internationalization/TextChar.h>
+#endif
+
 /**
  * Text run that represents a segment of text which is in the process of being typed out.
  * The size of the text block will represent the final size of each word rather than the provided content.
@@ -60,7 +64,11 @@ private:
 		for (int32 i = 0; i < futureContent.Len(); ++i)
 		{
 			TCHAR futureChar = futureContent[i];
+#if ENGINE_MAJOR_VERSION == 5 && ENGINE_MINOR_VERSION >= 7
+			if (FTextChar::IsWhitespace(futureChar))
+#else
 			if (FText::IsWhitespace(futureChar))
+#endif
 			{
 				futureContent.LeftInline(i);
 				break;
